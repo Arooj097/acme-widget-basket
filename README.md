@@ -18,6 +18,14 @@ To run tests, use:
 ```bash
 vendor/bin/phpunit tests/BasketTest.php
 
+
+## Usage
+
+To run tests, use:
+
+```bash
+vendor/bin/phpunit tests/BasketTest.php
+
 Code Explanation:
 
 Basket.php:
