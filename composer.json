@@ -1,0 +1,22 @@
+{
+    "name": "acme/widget-basket",
+    "description": "A PHP project for Acme Widget Co.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Arooj097",
+            "email": "93935385+Arooj097@users.noreply.github.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require-dev": {
+        "phpunit/phpunit": "^10.5",
+        "phpstan/phpstan": "^1.11"
+    },
+    "autoload": {
+        "psr-4": {
+            "Acme\\": "src/"
+        }
+    }
+}
