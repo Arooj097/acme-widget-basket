@@ -18,9 +18,10 @@ class Basket
 
     public function add(string $productCode)
     {
-        if (isset($this->products[$productCode])) {
-            $this->items[] = $productCode;
+        if (!isset($this->products[$productCode])) {
+            throw new \InvalidArgumentException("Product code '$productCode' does not exist.");
         }
+        $this->items[] = $productCode;
     }
 
     public function total(): float
@@ -30,21 +31,36 @@ class Basket
 
         // Calculate total without delivery
         foreach ($itemCounts as $code => $count) {
+            if (!isset($this->products[$code])) {
+                continue;
+            }
+
             $total += $this->products[$code]['price'] * $count;
+            
             // Apply special offers
-            if ($code == 'R01' && $count > 1) {
-                $total -= ($this->products[$code]['price'] / 2);
+            if (isset($this->offers[$code])) {
+                $offer = $this->offers[$code];
+                if ($offer['buy'] > 0) {
+                    $discountedItems = floor($count / ($offer['buy'] + 1));
+                    $total -= $discountedItems * $this->products[$code]['price'] * $offer['get'];
+                }
             }
         }
 
         // Apply delivery rules
-        if ($total < 50) {
-            $total += 4.95;
-        } elseif ($total < 90) {
-            $total += 2.95;
-        }
+        $total += $this->calculateDeliveryCost($total);
 
         return $total;
+    }
+
+    private function calculateDeliveryCost(float $total): float
+    {
+        foreach ($this->deliveryRules as $rule) {
+            if ($total < $rule['limit']) {
+                return $rule['cost'];
+            }
+        }
+        return 0.0;
     }
 }
 ?>

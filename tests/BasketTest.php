@@ -54,5 +54,29 @@ class BasketTest extends TestCase
         $basket->add('R01');
         $this->assertEqualsWithDelta(98.27, $basket->total(), 0.01);
     }
+
+    public function testEmptyBasket()
+    {
+        $basket = new Basket($this->products, $this->deliveryRules, $this->offers);
+        $this->assertEqualsWithDelta(0.0, $basket->total(), 0.01);
+    }
+
+    public function testInvalidProductCode()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $basket = new Basket($this->products, $this->deliveryRules, $this->offers);
+        $basket->add('INVALID');
+    }
+
+    public function testBasketWithOffer()
+    {
+        $basket = new Basket($this->products, $this->deliveryRules, $this->offers);
+
+        $basket->add('R01');
+        $basket->add('R01');
+        $basket->add('R01'); // Applying offer here
+        $this->assertEqualsWithDelta(65.90, $basket->total(), 0.01); // Two red widgets at full price, one at half price
+    }
 }
 ?>
